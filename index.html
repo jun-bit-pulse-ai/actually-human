@@ -1,0 +1,1450 @@
+<title>Actually Human</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=VT323&display=swap">
+
+<style>
+/* ============================================================
+   ACTUALLY HUMAN — a paid programme, ch. 07
+   Single committed visual world: a 1994 CRT broadcast.
+   Every colour painted explicitly; no theme inversion.
+   ============================================================ */
+:root {
+  --void:    #150E33;
+  --void-2:  #0B0722;
+  --screen:  #241A5C;
+  --screen-2:#2E2270;
+  --line:    #4B3BA6;
+  --line-2:  rgba(179, 168, 224, 0.22);
+
+  --white:   #F6F1E4;
+  --dim:     #B7ACE4;
+  --dim-2:   #8175CC;
+
+  --pink:    #FF2E88;
+  --cyan:    #21E8D6;
+  --gold:    #FFC531;
+
+  --ok:      #3DE07A;
+  --warn:    #FFC531;
+  --crit:    #FF2E88;
+
+  --show:  "Bungee", "Arial Black", Impact, sans-serif;
+  --body:  "Jost", "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
+  --crt:   "VT323", "Courier New", ui-monospace, monospace;
+
+  --measure: 60ch;
+  --edge: clamp(1.1rem, 4.5vw, 4.5rem);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background-color: var(--void);
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, #2A1B6B 0%, transparent 60%),
+    radial-gradient(90% 60% at 100% 100%, #3A1155 0%, transparent 65%);
+  background-attachment: fixed;
+  color: var(--white);
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---- CRT overlay: scanlines + tube vignette ---- */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.20) 0px,
+      rgba(0,0,0,0.20) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+.crt-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 50%, transparent 45%, rgba(6,3,20,0.75) 100%);
+}
+
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--edge);
+}
+
+/* CRT utility text — timecodes, bugs, captions */
+.crt-text {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.lede {
+  font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  color: var(--dim);
+  max-width: var(--measure);
+}
+
+/* ============================================================
+   Broadcast header + nav
+   ============================================================ */
+.bcast {
+  background: var(--void-2);
+  border-bottom: 2px solid var(--line);
+}
+.bcast-in {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding-block: 0.5rem;
+  font-family: var(--crt);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim-2);
+}
+.live { color: var(--pink); display: flex; align-items: center; gap: 0.45rem; }
+.live-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--pink);
+  animation: blink 1.6s steps(1) infinite;
+}
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.15; } }
+.bcast-net { color: var(--cyan); }
+.bcast-right { margin-left: auto; }
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(11, 7, 34, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid var(--pink);
+}
+.nav-in { display: flex; align-items: center; gap: 1.5rem; min-height: 60px; }
+
+.mark { text-decoration: none; margin-right: auto; display: flex; align-items: baseline; gap: 0.3rem; }
+.mark-name {
+  font-family: var(--show);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: var(--white);
+}
+.mark-tm { font-family: var(--crt); font-size: 0.8125rem; color: var(--cyan); }
+
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--dim);
+}
+.nav-links a:hover { color: var(--gold); }
+@media (max-width: 900px) { .nav-links { display: none; } }
+
+/* ============================================================
+   Buttons — chunky 90s bevel
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--show);
+  font-size: 0.875rem;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  padding: 0.85rem 1.4rem;
+  color: var(--void-2);
+  background: var(--gold);
+  border: 2px solid var(--void-2);
+  box-shadow: 5px 5px 0 var(--pink);
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+.btn:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--pink); }
+.btn:active { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--pink); }
+
+.btn-cyan { background: var(--cyan); box-shadow: 5px 5px 0 var(--pink); }
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--cyan);
+  box-shadow: 5px 5px 0 var(--screen-2);
+}
+.btn-sm { padding: 0.5rem 0.9rem; font-size: 0.75rem; box-shadow: 4px 4px 0 var(--pink); }
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero { padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(2rem, 5vw, 3.5rem); }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+@media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; } }
+
+.hero-copy { display: flex; flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+
+.kicker {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border: 1px solid var(--line);
+  padding: 0.3rem 0.7rem;
+}
+
+/* The show logo — chromatic RGB split, the page's one big risk */
+.showlogo {
+  font-family: var(--show);
+  font-size: clamp(2.6rem, 9.5vw, 6rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  text-shadow:
+    0.055em 0 0 var(--pink),
+   -0.055em 0 0 var(--cyan);
+  animation: tune 1.1s steps(2) 1 both;
+}
+@keyframes tune {
+  0%   { opacity: 0; transform: scaleY(0.04) scaleX(1.4); filter: blur(2px); }
+  40%  { opacity: 1; transform: scaleY(1.18) scaleX(0.96); }
+  70%  { transform: scaleY(0.96) scaleX(1.02); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+.hero-sub {
+  font-family: var(--show);
+  font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+  line-height: 1.25;
+  color: var(--gold);
+  max-width: 20ch;
+}
+.hero-sub em { font-style: normal; color: var(--pink); }
+
+.hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+/* Closed-caption block — the deadpan aside device */
+.cc {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--void-2);
+  border: 1px solid var(--line);
+  padding: 0.55rem 0.85rem;
+}
+
+/* ---- The television set ---- */
+.tv { display: grid; gap: 0.85rem; justify-items: center; }
+.tv-body {
+  width: 100%;
+  background: linear-gradient(180deg, #3C2E86 0%, #241A5C 100%);
+  border: 3px solid var(--void-2);
+  border-radius: 22px 22px 14px 14px;
+  padding: 18px 18px 0;
+  box-shadow: 10px 10px 0 rgba(11,7,34,0.6);
+}
+.tv-screen {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: radial-gradient(120% 110% at 50% 30%, #1E2E5E 0%, #0B0722 100%);
+  border: 3px solid var(--void-2);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 0.9rem 0.9rem;
+}
+.tv-screen::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg, rgba(255,255,255,0.13) 0%, transparent 42%);
+  pointer-events: none;
+}
+.tv-bug {
+  position: absolute;
+  top: 0.7rem; right: 0.8rem;
+  font-family: var(--show);
+  font-size: 0.8125rem;
+  color: var(--white);
+  opacity: 0.72;
+  letter-spacing: 0.04em;
+}
+.tv-tc {
+  position: absolute;
+  top: 0.75rem; left: 0.85rem;
+  font-family: var(--crt);
+  font-size: 0.9375rem;
+  letter-spacing: 0.1em;
+  color: var(--pink);
+}
+.tv-quote {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  gap: 0.45rem;
+  padding-inline: 0.5rem;
+  text-align: center;
+  font-family: var(--crt);
+  font-size: clamp(0.95rem, 2.1vw, 1.3rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  line-height: 1.25;
+}
+.tv-quote b { color: var(--cyan); display: block; font-weight: 400; }
+
+/* Lower third */
+.lt { position: relative; z-index: 2; display: grid; gap: 4px; }
+.lt-bar {
+  transform: skewX(-9deg);
+  padding: 0.34rem 0.9rem;
+  align-self: start;
+}
+.lt-bar > * { display: block; transform: skewX(9deg); }
+.lt-name {
+  background: var(--pink);
+  color: var(--void-2);
+  font-family: var(--show);
+  font-size: clamp(0.8125rem, 1.9vw, 1.0625rem);
+  letter-spacing: 0.02em;
+}
+.lt-role {
+  background: var(--void-2);
+  color: var(--cyan);
+  font-family: var(--crt);
+  font-size: 0.9375rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tv-verdict {
+  background: var(--gold);
+  color: var(--void-2);
+  font-family: var(--show);
+  font-size: clamp(0.8125rem, 1.9vw, 1.0625rem);
+}
+
+.tv-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.2rem 0.75rem;
+}
+.tv-knob {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--void-2);
+  border: 2px solid var(--dim-2);
+}
+.tv-brand {
+  font-family: var(--crt);
+  font-size: 0.9375rem;
+  letter-spacing: 0.16em;
+  color: var(--dim-2);
+  margin-left: auto;
+  text-transform: uppercase;
+}
+.tv-stand {
+  width: 42%;
+  height: 12px;
+  background: var(--void-2);
+  border-radius: 0 0 8px 8px;
+}
+
+/* ============================================================
+   Ticker
+   ============================================================ */
+.ticker {
+  background: var(--pink);
+  border-block: 3px solid var(--void-2);
+  overflow: hidden;
+  padding: 0.5rem 0;
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: roll 34s linear infinite;
+}
+.ticker-track span {
+  font-family: var(--show);
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  color: var(--void-2);
+  padding-right: 2.2rem;
+  white-space: nowrap;
+}
+@keyframes roll { to { transform: translateX(-50%); } }
+
+/* ============================================================
+   Sections + lower-third headers
+   ============================================================ */
+.section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
+.section-head { display: grid; gap: 1rem; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); justify-items: start; }
+.slate {
+  transform: skewX(-9deg);
+  background: var(--cyan);
+  padding: 0.3rem 0.9rem;
+}
+.slate span {
+  display: block;
+  transform: skewX(9deg);
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--void-2);
+}
+.section-head h2 {
+  font-family: var(--show);
+  font-size: clamp(1.6rem, 4.2vw, 2.9rem);
+  line-height: 1.08;
+  letter-spacing: 0.005em;
+  max-width: 22ch;
+}
+.section-head h2 em { font-style: normal; color: var(--gold); }
+
+/* ============================================================
+   Segments (services)
+   ============================================================ */
+.segments { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.25rem; }
+.segment {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.4rem;
+  background: var(--screen);
+  border: 2px solid var(--line);
+  box-shadow: 7px 7px 0 rgba(11,7,34,0.55);
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.segment:nth-child(1), .segment:nth-child(2) { grid-column: span 3; }
+.segment:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 10px 10px 0 var(--pink);
+  border-color: var(--cyan);
+}
+@media (max-width: 900px) {
+  .segments { grid-template-columns: 1fr; }
+  .segment, .segment:nth-child(1), .segment:nth-child(2) { grid-column: span 1; }
+}
+
+.seg-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px dashed var(--line);
+  font-family: var(--crt);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim-2);
+}
+.chip {
+  font-family: var(--crt);
+  padding: 0.1rem 0.5rem;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+}
+.chip-crit { color: var(--crit); }
+.chip-warn { color: var(--warn); }
+.chip-ok   { color: var(--ok); }
+
+.segment h3 { font-family: var(--show); font-size: 1.1875rem; line-height: 1.2; }
+.seg-q {
+  font-size: 1.0625rem;
+  font-style: italic;
+  color: var(--cyan);
+  border-left: 3px solid var(--pink);
+  padding-left: 0.8rem;
+}
+.seg-body { color: var(--dim); font-size: 1rem; }
+.seg-deliv {
+  margin-top: auto;
+  padding-top: 0.8rem;
+  border-top: 2px dashed var(--line);
+  font-family: var(--crt);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  line-height: 1.4;
+}
+.seg-deliv b { display: block; color: var(--gold); letter-spacing: 0.14em; }
+
+/* ============================================================
+   How to order — a real sequence
+   ============================================================ */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+.step {
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+  padding: 1.3rem 1.2rem;
+  background: var(--void-2);
+  border: 2px solid var(--line);
+}
+.step-n {
+  font-family: var(--show);
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--pink);
+  -webkit-text-stroke: 0;
+}
+.step h3 { font-family: var(--show); font-size: 1.0625rem; color: var(--gold); }
+.step p { font-size: 0.9375rem; color: var(--dim); }
+
+/* ============================================================
+   Cast
+   ============================================================ */
+.cast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+@media (max-width: 1000px) { .cast { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .cast { grid-template-columns: 1fr; } }
+.cast-card {
+  background: var(--screen);
+  border: 2px solid var(--line);
+  box-shadow: 7px 7px 0 rgba(11,7,34,0.55);
+  display: flex;
+  flex-direction: column;
+}
+.cast-screen {
+  aspect-ratio: 4 / 3;
+  background: radial-gradient(120% 110% at 50% 25%, #33256F 0%, #0B0722 100%);
+  border-bottom: 2px solid var(--line);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.7rem;
+}
+/* portrait sits behind the number and the NOT AN ACTOR bar */
+.cast-num {
+  position: absolute;
+  top: 0.55rem; right: 0.7rem;
+  font-family: var(--crt);
+  font-size: 0.9375rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  z-index: 2;
+  text-shadow: 0 1px 3px var(--void-2);
+}
+.cast-in { padding: 1.1rem; display: grid; gap: 0.45rem; }
+.cast-in h3 { font-family: var(--show); font-size: 1.0625rem; }
+.cast-role {
+  font-family: var(--crt);
+  font-size: 1rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  padding-bottom: 0.55rem;
+  border-bottom: 2px dashed var(--line);
+}
+.cast-bio { font-size: 0.9375rem; color: var(--dim); }
+
+/* ============================================================
+   The offer
+   ============================================================ */
+.offer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: start; }
+@media (max-width: 940px) { .offer { grid-template-columns: 1fr; } }
+
+.tier {
+  background: var(--screen);
+  border: 3px solid var(--void-2);
+  box-shadow: 8px 8px 0 rgba(11,7,34,0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 1.4rem 1.6rem;
+  position: relative;
+}
+.tier-feature { border-color: var(--gold); box-shadow: 8px 8px 0 var(--pink); }
+
+.tier-flag {
+  position: absolute;
+  top: -14px; left: 1.1rem;
+  transform: skewX(-9deg);
+  background: var(--gold);
+  padding: 0.2rem 0.7rem;
+}
+.tier-flag span {
+  display: block;
+  transform: skewX(9deg);
+  font-family: var(--show);
+  font-size: 0.75rem;
+  color: var(--void-2);
+}
+.tier h3 { font-family: var(--show); font-size: 1.375rem; margin-top: 0.35rem; position: relative; z-index: 1; }
+.tier-desc { color: var(--dim); font-size: 1rem; }
+.tier ul {
+  margin: 0; padding: 0; list-style: none;
+  display: grid; gap: 0.4rem;
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.tier li::before { content: "\25B8 "; color: var(--cyan); }
+
+/* Starburst price */
+.burst { position: relative; display: grid; place-items: center; padding: 1.1rem 0 0.4rem; }
+.burst::before {
+  content: "";
+  position: absolute;
+  width: 148px; height: 148px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(var(--gold) 0deg 7deg, transparent 7deg 14deg);
+  opacity: 0.22;
+  animation: spin 26s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.price {
+  position: relative;
+  font-family: var(--show);
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 3px 3px 0 var(--void-2);
+}
+.price-unit {
+  position: relative;
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-top: 0.3rem;
+}
+.tier .btn { align-self: start; margin-top: auto; }
+
+.fineprint {
+  margin-top: 1.75rem;
+  border: 2px dashed var(--line);
+  padding: 1rem 1.1rem;
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dim);
+  line-height: 1.45;
+}
+
+/* ============================================================
+   Callers
+   ============================================================ */
+.callers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) { .callers { grid-template-columns: 1fr; } }
+.caller {
+  background: var(--void-2);
+  border: 2px solid var(--line);
+  padding: 1.4rem;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+.caller blockquote { margin: 0; font-size: 1.0625rem; line-height: 1.5; text-wrap: pretty; }
+.caller figcaption { display: grid; gap: 3px; }
+.caller-name {
+  font-family: var(--show);
+  font-size: 0.875rem;
+  background: var(--cyan);
+  color: var(--void-2);
+  padding: 0.22rem 0.6rem;
+  justify-self: start;
+}
+.caller-meta {
+  font-family: var(--crt);
+  font-size: 0.9375rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pink);
+}
+
+/* ============================================================
+   Viewer mail
+   ============================================================ */
+.mail { max-width: 900px; border-top: 3px solid var(--pink); }
+.mail details { border-bottom: 2px solid var(--line); }
+.mail summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 1.15rem 2.6rem 1.15rem 0;
+  font-family: var(--show);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  position: relative;
+}
+.mail summary::-webkit-details-marker { display: none; }
+.mail summary::after {
+  content: "\25B6";
+  position: absolute;
+  right: 0.4rem; top: 1.25rem;
+  font-size: 0.8rem;
+  color: var(--gold);
+}
+.mail details[open] summary::after { content: "\25BC"; }
+.mail details p { padding: 0 2.6rem 1.3rem 0; color: var(--dim); max-width: var(--measure); }
+
+/* ============================================================
+   Interstitial + call block
+   ============================================================ */
+.brb {
+  background: var(--void-2);
+  border-block: 3px solid var(--pink);
+  padding: clamp(2rem, 6vw, 3.25rem) 0;
+  text-align: center;
+}
+.brb h2 {
+  font-family: var(--show);
+  font-size: clamp(1.5rem, 5.5vw, 3.25rem);
+  color: var(--gold);
+  line-height: 1.05;
+}
+.brb p {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim-2);
+  margin-top: 0.8rem;
+}
+
+.call {
+  border: 3px solid var(--gold);
+  background: var(--screen);
+  box-shadow: 10px 10px 0 var(--pink);
+  padding: clamp(1.75rem, 5vw, 3rem);
+  display: grid;
+  gap: 1.35rem;
+  justify-items: center;
+  text-align: center;
+}
+.call h2 { font-family: var(--show); font-size: clamp(1.5rem, 4.5vw, 2.75rem); line-height: 1.08; }
+.phone {
+  font-family: var(--show);
+  font-size: clamp(1.75rem, 6.5vw, 3.5rem);
+  color: var(--cyan);
+  letter-spacing: 0.01em;
+  text-shadow: 4px 4px 0 var(--void-2);
+  text-decoration: none;
+  display: block;
+}
+.phone:hover { color: var(--gold); }
+.call .lede { text-align: center; }
+.standing-by {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pink);
+}
+.call-actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+
+/* ============================================================
+   Sign-off
+   ============================================================ */
+.signoff {
+  border-top: 3px solid var(--line);
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: 2rem 0 3rem;
+  background: var(--void-2);
+}
+.signoff-in {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.signoff p {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim-2);
+  line-height: 1.5;
+  max-width: 46ch;
+  margin-top: 0.8rem;
+}
+.cc-badge {
+  font-family: var(--show);
+  font-size: 0.8125rem;
+  color: var(--void-2);
+  background: var(--white);
+  padding: 0.3rem 0.6rem;
+  border: 2px solid var(--void-2);
+}
+
+/* ============================================================
+   Imagery: Memphis confetti, test card, CRT snow, illustrations
+   ============================================================ */
+.confetti { position: relative; isolation: isolate; }
+.confetti::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.17;
+  -webkit-mask-image: radial-gradient(115% 85% at 50% 50%, transparent 18%, #000 78%);
+  mask-image: radial-gradient(115% 85% at 50% 50%, transparent 18%, #000 78%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190' viewBox='0 0 190 190'%3E%3Cg fill='none' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M14 30 q9 -14 18 0 t18 0' stroke='%23FF2E88'/%3E%3Cpath d='M112 158 q9 -14 18 0 t18 0' stroke='%2321E8D6'/%3E%3Cpath d='M148 22 l15 26 h-30 z' fill='%23FFC531' stroke='none'/%3E%3Ccircle cx='46' cy='112' r='7' fill='%2321E8D6' stroke='none'/%3E%3Cpath d='M92 70 v20 M82 80 h20' stroke='%23FFC531'/%3E%3Cpath d='M158 100 l12 12 -12 12' stroke='%23FF2E88'/%3E%3Crect x='16' y='158' width='20' height='9' fill='%23FF2E88' stroke='none' transform='rotate(-18 26 162)'/%3E%3Ccircle cx='128' cy='58' r='5' fill='%23F6F1E4' stroke='none'/%3E%3Cpath d='M60 176 l14 -14' stroke='%2321E8D6'/%3E%3Cpath d='M176 66 v18' stroke='%23FF2E88'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 190px 190px;
+}
+
+/* CRT snow inside the television */
+.tv-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+  animation: snow 0.6s steps(3) infinite;
+}
+@keyframes snow {
+  0%   { background-position: 0 0; }
+  33%  { background-position: -40px 25px; }
+  66%  { background-position: 30px -35px; }
+  100% { background-position: -15px 15px; }
+}
+
+/* Segment icon plate */
+.seg-art {
+  width: 60px; height: 60px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--void-2);
+  border: 2px solid var(--line);
+  box-shadow: 4px 4px 0 rgba(11,7,34,0.6);
+}
+.seg-art svg { width: 38px; height: 38px; display: block; }
+.segment:hover .seg-art { border-color: var(--cyan); }
+
+/* Cast portraits */
+.cast-portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  display: block;
+}
+
+/* Test card */
+.testcard {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 3px solid var(--void-2);
+  border-radius: 12px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 3fr 1fr;
+  position: relative;
+}
+.testcard-bars {
+  background: linear-gradient(90deg,
+    #BFBFBF 0 14.28%, #BFBF00 0 28.57%, #00BFBF 0 42.85%,
+    #00BF00 0 57.14%, #BF00BF 0 71.42%, #BF0000 0 85.71%, #0000BF 0 100%);
+}
+.testcard-strip {
+  background: linear-gradient(90deg,
+    #0000BF 0 14.28%, #131313 0 28.57%, #BF00BF 0 42.85%,
+    #131313 0 57.14%, #00BFBF 0 71.42%, #131313 0 85.71%, #BFBFBF 0 100%);
+}
+.testcard-label {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--void-2);
+  border: 2px solid var(--white);
+  color: var(--white);
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  white-space: nowrap;
+}
+.brb-set {
+  width: min(300px, 74vw);
+  margin: 0 auto clamp(1.25rem, 3vw, 2rem);
+  background: linear-gradient(180deg, #3C2E86 0%, #241A5C 100%);
+  border: 3px solid var(--void-2);
+  border-radius: 18px 18px 12px 12px;
+  padding: 14px 14px 10px;
+  box-shadow: 8px 8px 0 rgba(11,7,34,0.6);
+}
+
+/* As-seen-on badge */
+.astv {
+  display: inline-grid;
+  place-items: center;
+  gap: 1px;
+  transform: rotate(-4deg);
+  background: var(--white);
+  color: var(--void-2);
+  border: 3px solid var(--void-2);
+  border-radius: 50% / 42%;
+  padding: 0.6rem 1.5rem;
+  box-shadow: 5px 5px 0 var(--pink);
+}
+.astv b { font-family: var(--show); font-size: 0.6875rem; letter-spacing: 0.06em; }
+.astv strong { font-family: var(--show); font-size: 1.0625rem; letter-spacing: 0.02em; color: #BF0000; }
+
+/* Rotary phone + tower */
+.call-art { width: clamp(84px, 20vw, 118px); height: auto; display: block; flex: none; }
+.phone-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 3vw, 1.75rem);
+  flex-wrap: wrap;
+}
+.tower-art { width: 74px; height: 74px; flex: none; display: block; }
+.signoff-in .tower-wrap { display: flex; align-items: center; gap: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .showlogo { opacity: 1; transform: none; filter: none; }
+  .tv-screen::before { animation: none; }
+  .live-dot { opacity: 1; }
+}
+</style>
+
+<div class="crt-overlay" aria-hidden="true"></div>
+<div class="crt-vignette" aria-hidden="true"></div>
+
+<header class="bcast">
+  <div class="wrap bcast-in">
+    <span class="live"><span class="live-dot"></span>Live</span>
+    <span class="bcast-net">Human Broadcasting Network</span>
+    <span>Ch.&nbsp;07</span>
+    <span class="bcast-right">Paid Programming</span>
+  </div>
+</header>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="mark" href="#top"><span class="mark-name">Actually Human</span><span class="mark-tm">&trade;</span></a>
+    <div class="nav-links">
+      <a href="#segments">Segments</a>
+      <a href="#order">How to Order</a>
+      <a href="#cast">The Cast</a>
+      <a href="#offer">The Offer</a>
+    </div>
+    <a class="btn btn-sm" href="#call">Call Now</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero confetti">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="kicker">Originally broadcast 2:47 AM</span>
+        <h1 class="showlogo">Actually<br>Human&trade;</h1>
+        <p class="hero-sub">Your AI is extremely confident. <em>That is the entire problem.</em></p>
+        <p class="lede">
+          Actually Human&trade; puts a real, employed, mildly irritated person between your model's
+          output and your reputation. They read it. They watch it. They run it. Then they tell you
+          the truth &mdash; which is, statistically, that it needs work.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href="#call">Call now</a>
+          <a class="btn btn-ghost" href="#cast">Meet the cast</a>
+        </div>
+        <p class="cc">[ sound of a human sighing at a desk ]</p>
+      </div>
+
+      <!-- The television set: the hero's thesis object -->
+      <div class="tv">
+        <div class="tv-body">
+          <div class="tv-screen">
+            <span class="tv-tc">00:41:12</span>
+            <span class="tv-bug">AH&#8209;7</span>
+            <p class="tv-quote">
+              The model's assessment of its own work:
+              <b>&ldquo;Excellent question! &#10003;&rdquo;</b>
+            </p>
+            <div class="lt">
+              <div class="lt-bar"><span class="lt-name">Marguerite D. &middot; No.&nbsp;07</span></div>
+              <div class="lt-bar"><span class="lt-role">Senior Prose Inspector &middot; 19 yrs</span></div>
+              <div class="lt-bar"><span class="tv-verdict">Verdict: needs work &mdash; see notes, all 14</span></div>
+            </div>
+          </div>
+          <div class="tv-controls">
+            <span class="tv-knob"></span>
+            <span class="tv-knob"></span>
+            <span class="tv-brand">Vert. Hold</span>
+          </div>
+        </div>
+        <div class="tv-stand"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TICKER ===================== -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>&#9733; Operators are standing by &#9733; Actual humans &#9733; Not a chatbot &#9733; Not an agent swarm &#9733; One person, one opinion &#9733; No tokens, no credits &#9733; Results may include the truth &#9733;</span>
+      <span>&#9733; Operators are standing by &#9733; Actual humans &#9733; Not a chatbot &#9733; Not an agent swarm &#9733; One person, one opinion &#9733; No tokens, no credits &#9733; Results may include the truth &#9733;</span>
+    </div>
+  </div>
+
+  <!-- ===================== SEGMENTS ===================== -->
+  <section class="section" id="segments">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="slate"><span>Tonight's segments &middot; 5 of 5</span></div>
+        <h2>Five things your model <em>cannot honestly grade,</em> because it wrote them.</h2>
+        <p class="lede">
+          Every review is performed by one named human being who is professionally on the hook for
+          the verdict. You get their notes, their severity rating, and their name.
+        </p>
+      </div>
+
+      <div class="segments">
+
+        <article class="segment">
+          <div class="seg-head"><span>Segment 01 &middot; The prose desk</span><span class="chip chip-warn">Sev: varies</span></div>
+          <div class="seg-art"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="5" y="6" width="26" height="36" stroke="#21E8D6" stroke-width="3"/><path d="M11 16h14M11 23h14M11 30h9" stroke="#21E8D6" stroke-width="2.5" stroke-linecap="round"/><path d="M41 7l5 5-19 19-7 2 2-7z" fill="#FF2E88"/><path d="M12 36c6 2 10-2 16 0" stroke="#FFC531" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <h3>Prose &amp; Response Review</h3>
+          <p class="seg-q">&ldquo;Is this answer any good, or does it just sound like it is?&rdquo;</p>
+          <p class="seg-body">
+            The model said yes. The model always says yes. So we hand it to a human with an actual
+            degree in the actual subject, who reads it and marks it up in red pen like it's 1994 and
+            you have not done the reading. They will find the paragraph that says nothing
+            beautifully. They will find the fact that is 80% true.
+          </p>
+          <p class="seg-deliv"><b>You receive</b>Annotated copy &middot; severity rating &middot; one sentence beginning &ldquo;the real problem here is&hellip;&rdquo;</p>
+        </article>
+
+        <article class="segment">
+          <div class="seg-head"><span>Segment 02 &middot; Tape review</span><span class="chip chip-crit">Sev: high</span></div>
+          <div class="seg-art"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="4" y="9" width="40" height="30" stroke="#21E8D6" stroke-width="3"/><path d="M4 16h40M4 32h40" stroke="#21E8D6" stroke-width="2"/><g fill="#21E8D6"><rect x="7" y="11" width="4" height="3"/><rect x="15" y="11" width="4" height="3"/><rect x="23" y="11" width="4" height="3"/><rect x="31" y="11" width="4" height="3"/><rect x="39" y="11" width="3" height="3"/><rect x="7" y="34" width="4" height="3"/><rect x="15" y="34" width="4" height="3"/><rect x="23" y="34" width="4" height="3"/><rect x="31" y="34" width="4" height="3"/><rect x="39" y="34" width="3" height="3"/></g><path d="M20 19l11 5-11 5z" fill="#FFC531"/></svg></div>
+          <h3>Video &amp; Motion Review</h3>
+          <p class="seg-q">&ldquo;Six fingers. It is always six fingers.&rdquo;</p>
+          <p class="seg-body">
+            Our reviewers watch your generated video at 1&times; speed, the whole way through, which
+            is more than you did. They count the fingers. They notice the chair that quietly becomes
+            a different chair. They flag second 4.2, where physics stops applying and the coffee
+            pours upward, and second 6.8, where the actor's face becomes a suggestion.
+          </p>
+          <p class="seg-deliv"><b>You receive</b>Timecoded defect list &middot; frame grabs &middot; a ship / do&#8209;not&#8209;ship call with a human name on it</p>
+        </article>
+
+        <article class="segment">
+          <div class="seg-head"><span>Segment 03 &middot; The code booth</span><span class="chip chip-crit">Sev: critical</span></div>
+          <div class="seg-art"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="4" y="8" width="40" height="32" stroke="#21E8D6" stroke-width="3"/><path d="M4 17h40" stroke="#21E8D6" stroke-width="2.5"/><g fill="#FF2E88"><circle cx="10" cy="12.5" r="2"/><circle cx="17" cy="12.5" r="2"/><circle cx="24" cy="12.5" r="2"/></g><path d="M12 24l5 5-5 5" stroke="#FFC531" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 34h13" stroke="#FFC531" stroke-width="3" stroke-linecap="round"/></svg></div>
+          <h3>Code &amp; Security Review</h3>
+          <p class="seg-q">&ldquo;It wrote the vulnerability, then wrote a passing test for it.&rdquo;</p>
+          <p class="seg-body">
+            A human who has personally been paged at 3am reads the diff. They check the auth path,
+            the injection surface, and the secret you hardcoded &ldquo;temporarily&rdquo; in March.
+            They do not vibe. They grep.
+          </p>
+          <p class="seg-deliv"><b>You receive</b>Line&#8209;level findings &middot; exploit sketch &middot; a fix written by someone who will be here next quarter</p>
+        </article>
+
+        <article class="segment">
+          <div class="seg-head"><span>Segment 04 &middot; Style desk</span><span class="chip chip-warn">Sev: spiritual</span></div>
+          <div class="seg-art"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M23 6C13 6 5 14 5 24s8 18 18 18c3 0 4-2 3-4-2-4 1-6 4-6h4c5 0 9-4 9-9C43 13 34 6 23 6z" stroke="#21E8D6" stroke-width="3"/><circle cx="15" cy="17" r="3.2" fill="#FF2E88"/><circle cx="27" cy="14" r="3.2" fill="#FFC531"/><circle cx="34" cy="23" r="3.2" fill="#F6F1E4"/><circle cx="13" cy="29" r="3.2" fill="#21E8D6"/></svg></div>
+          <h3>Taste &amp; Aesthetic Review</h3>
+          <p class="seg-q">&ldquo;Technically this is art. Emotionally it is a stock photo.&rdquo;</p>
+          <p class="seg-body">
+            Someone with genuine taste &mdash; trained, employed, faintly bitter &mdash; looks at your
+            generated image, layout, or brand system and explains precisely why it feels like
+            everyone else's. Includes the phrase &ldquo;it's fine,&rdquo; delivered in the tone that
+            means it is not fine.
+          </p>
+          <p class="seg-deliv"><b>You receive</b>Written critique &middot; three references that do it better &middot; the one thing worth keeping</p>
+        </article>
+
+        <article class="segment">
+          <div class="seg-head"><span>Segment 05 &middot; The last word</span><span class="chip chip-crit">Sev: terminal</span></div>
+          <div class="seg-art"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 6a13 13 0 00-8 23v4h16v-4a13 13 0 00-8-23z" stroke="#21E8D6" stroke-width="3"/><path d="M18 37h12M20 41h8" stroke="#21E8D6" stroke-width="2.5" stroke-linecap="round"/><path d="M9 9l30 30M39 9L9 39" stroke="#FF2E88" stroke-width="3.5" stroke-linecap="round"/></svg></div>
+          <h3>Idea &amp; Market Validation</h3>
+          <p class="seg-q">&ldquo;I am so tired of being told it's a great idea.&rdquo;</p>
+          <p class="seg-body">
+            You pitched it to the chatbot. The chatbot called it a compelling opportunity in a large
+            and growing market, then offered to draft the launch plan. Our human will read the same
+            pitch and say: no. Then, because we are professionals, they will explain exactly why, in
+            writing, with a numbered list, and three questions you have not answered.
+          </p>
+          <p class="seg-deliv"><b>You receive</b>A verdict you did not want &middot; the numbered reasons &middot; the one version that might work</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOW TO ORDER ===================== -->
+  <section class="section" id="order">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="slate"><span>How to order &middot; four easy steps</span></div>
+        <h2>How a human gets <em>into your loop.</em></h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-n">01</span>
+          <h3>Submit</h3>
+          <p>Send the output. Text, video file, repo link, mockup, deck &mdash; whatever your model produced with total conviction.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">02</span>
+          <h3>Assign</h3>
+          <p>We route it to a human who has genuinely done this job for years, not a human who has read a lot about this job.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">03</span>
+          <h3>Review</h3>
+          <p>They take their time. Humans are slow, expensive and easily annoyed. That is the product, not a defect.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">04</span>
+          <h3>Verdict</h3>
+          <p>A marked&#8209;up file, a severity rating, and a plain answer to &ldquo;is this good?&rdquo; Signed. Dated. Usually: no.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CAST ===================== -->
+  <section class="section" id="cast">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="slate"><span>Starring &middot; tonight's inspectors</span></div>
+        <h2>Carbon&#8209;based. Credentialed. <em>Not especially impressed.</em></h2>
+        <p class="lede">
+          Every inspector has a number, a specialism, and the professional confidence required to say
+          &ldquo;no&rdquo; to a paying customer on camera.
+        </p>
+      </div>
+      <div class="cast">
+
+        <div class="cast-card">
+          <div class="cast-screen">
+            <svg class="cast-portrait" viewBox="0 0 120 90" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M16 90C16 71 36 62 60 62s44 9 44 28z" fill="#FF2E88"/><path d="M52 48h16v18H52z" fill="#F6F1E4"/><ellipse cx="60" cy="38" rx="18" ry="21" fill="#F6F1E4"/><path d="M60 12c-13 0-22 9-22 22v24h7V34c0-9 6-15 15-15s15 6 15 15v24h7V34c0-13-9-22-22-22z" fill="#FFC531"/><circle cx="53" cy="37" r="2.3" fill="#0B0722"/><circle cx="67" cy="37" r="2.3" fill="#0B0722"/><path d="M53 48h14" stroke="#0B0722" stroke-width="2.4" stroke-linecap="round"/><g fill="none" stroke="#21E8D6" stroke-width="2.4"><rect x="45" y="31" width="15" height="12" rx="3"/><rect x="62" y="31" width="15" height="12" rx="3"/><path d="M60 36h2M45 36h-6M77 36h6"/></g></svg>
+            <span class="cast-num">No.&nbsp;07</span>
+            <div class="lt"><div class="lt-bar"><span class="lt-role">Not an actor</span></div></div>
+          </div>
+          <div class="cast-in">
+            <h3>Marguerite D.</h3>
+            <p class="cast-role">Senior Prose Inspector</p>
+            <p class="cast-bio">Nineteen years in editorial. Has said &ldquo;that is not what that word means&rdquo; out loud, in a meeting, to a founder.</p>
+          </div>
+        </div>
+
+        <div class="cast-card">
+          <div class="cast-screen">
+            <svg class="cast-portrait" viewBox="0 0 120 90" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M16 90C16 71 36 62 60 62s44 9 44 28z" fill="#21E8D6"/><path d="M52 48h16v18H52z" fill="#F6F1E4"/><ellipse cx="60" cy="38" rx="18" ry="21" fill="#F6F1E4"/><path d="M60 12c-13 0-22 9-22 22v34h7V34c0-9 6-15 15-15s15 6 15 15v34h7V34c0-13-9-22-22-22z" fill="#8175CC"/><circle cx="53" cy="37" r="2.3" fill="#0B0722"/><circle cx="67" cy="37" r="2.3" fill="#0B0722"/><path d="M53 48h14" stroke="#0B0722" stroke-width="2.4" stroke-linecap="round"/><path d="M35 38a25 25 0 0150 0" fill="none" stroke="#FFC531" stroke-width="4"/><rect x="28" y="34" width="11" height="17" rx="5" fill="#FFC531"/><rect x="81" y="34" width="11" height="17" rx="5" fill="#FFC531"/></svg>
+            <span class="cast-num">No.&nbsp;14</span>
+            <div class="lt"><div class="lt-bar"><span class="lt-role">Not an actor</span></div></div>
+          </div>
+          <div class="cast-in">
+            <h3>Priya R.</h3>
+            <p class="cast-role">Principal Security Reviewer</p>
+            <p class="cast-bio">Paged at 3:14am. Twice, in one night, for the same root cause. Trusts nothing now, including this website.</p>
+          </div>
+        </div>
+
+        <div class="cast-card">
+          <div class="cast-screen">
+            <svg class="cast-portrait" viewBox="0 0 120 90" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M16 90C16 71 36 62 60 62s44 9 44 28z" fill="#FFC531"/><path d="M52 48h16v18H52z" fill="#F6F1E4"/><ellipse cx="60" cy="38" rx="18" ry="21" fill="#F6F1E4"/><path d="M60 13c-12 0-21 8-21 19v3h7v-3c0-7 6-12 14-12s14 5 14 12v3h7v-3c0-11-9-19-21-19z" fill="#FF2E88"/><circle cx="53" cy="37" r="2.3" fill="#0B0722"/><circle cx="67" cy="37" r="2.3" fill="#0B0722"/><path d="M53 48h14" stroke="#0B0722" stroke-width="2.4" stroke-linecap="round"/><g fill="#21E8D6"><path d="M38 26c0-11 44-13 44-2 0 5-9 7-22 7s-22-1-22-5z"/><circle cx="45" cy="16" r="3.4"/></g></svg>
+            <span class="cast-num">No.&nbsp;22</span>
+            <div class="lt"><div class="lt-bar"><span class="lt-role">Not an actor</span></div></div>
+          </div>
+          <div class="cast-in">
+            <h3>Tom&aacute;s L.</h3>
+            <p class="cast-role">Head of Taste</p>
+            <p class="cast-bio">Art school, then agency, then a period of reflection, then here. Will not be softening the feedback for you.</p>
+          </div>
+        </div>
+
+        <div class="cast-card">
+          <div class="cast-screen">
+            <svg class="cast-portrait" viewBox="0 0 120 90" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M16 90C16 71 36 62 60 62s44 9 44 28z" fill="#8175CC"/><path d="M52 48h16v18H52z" fill="#F6F1E4"/><ellipse cx="60" cy="38" rx="18" ry="21" fill="#F6F1E4"/><path d="M60 13c-12 0-21 8-21 19v3h7v-3c0-7 6-12 14-12s14 5 14 12v3h7v-3c0-11-9-19-21-19z" fill="#FFC531"/><circle cx="53" cy="37" r="2.3" fill="#0B0722"/><circle cx="67" cy="37" r="2.3" fill="#0B0722"/><path d="M53 48h14" stroke="#0B0722" stroke-width="2.4" stroke-linecap="round"/><g fill="#FF2E88"><path d="M39 30c0-12 42-12 42 0v3H39z"/><path d="M79 27c11 0 17 3 17 6H79z"/><circle cx="60" cy="15" r="3"/></g></svg>
+            <span class="cast-num">No.&nbsp;31</span>
+            <div class="lt"><div class="lt-bar"><span class="lt-role">Not an actor</span></div></div>
+          </div>
+          <div class="cast-in">
+            <h3>Dave</h3>
+            <p class="cast-role">Idea Validation</p>
+            <p class="cast-bio">Dave has no formal credentials. Dave has been right forty&#8209;one times consecutively. We have stopped asking questions.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== OFFER ===================== -->
+  <section class="section confetti" id="offer">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="slate"><span>Tonight's offer &middot; act now</span></div>
+        <h2>Priced per human hour, <em>because that is literally what it is.</em></h2>
+        <span class="astv"><b>As seen on</b><strong>BASIC CABLE</strong></span>
+      </div>
+
+      <div class="offer">
+
+        <div class="tier">
+          <div class="tier-flag"><span>Try one</span></div>
+          <h3>The Second Opinion</h3>
+          <div class="burst">
+            <span class="price">$49</span>
+          </div>
+          <span class="price-unit">Per item &middot; 48 hours</span>
+          <p class="tier-desc">
+            One item, one human, one verdict. For when you already suspect the answer and want
+            someone qualified to confirm it.
+          </p>
+          <ul>
+            <li>One named reviewer</li>
+            <li>Annotated notes returned</li>
+            <li>One (1) honest sentence, free</li>
+          </ul>
+          <a class="btn btn-sm" href="#call">Order one</a>
+        </div>
+
+        <div class="tier tier-feature">
+          <div class="tier-flag"><span>Best value</span></div>
+          <h3>The Retainer</h3>
+          <div class="burst">
+            <span class="price">$1,200</span>
+          </div>
+          <span class="price-unit">Per month &middot; 40 reviews</span>
+          <p class="tier-desc">
+            A named human who learns your product, your standards and your bad habits &mdash; and
+            begins, against their own interests, to care about them.
+          </p>
+          <ul>
+            <li>Dedicated inspector &amp; number</li>
+            <li>Same&#8209;day on anything critical</li>
+            <li>Quarterly report on what you keep getting wrong</li>
+          </ul>
+          <a class="btn btn-sm" href="#call">Retain a human</a>
+        </div>
+
+        <div class="tier">
+          <div class="tier-flag"><span>Enterprise</span></div>
+          <h3>The Intervention</h3>
+          <div class="burst">
+            <span class="price">Custom</span>
+          </div>
+          <span class="price-unit">Embedded &middot; 2&ndash;5 days a week</span>
+          <p class="tier-desc">
+            A human inside your workflow. They join the standup. They read the PRs. They say
+            &ldquo;hold on&rdquo; out loud, in front of everyone, before the thing ships.
+          </p>
+          <ul>
+            <li>Embedded reviewer on site</li>
+            <li>Veto authority you may regret granting</li>
+            <li>Full audit trail, human signatures</li>
+          </ul>
+          <a class="btn btn-sm" href="#call">Talk to us</a>
+        </div>
+
+      </div>
+
+      <p class="fineprint">
+        All prices in real money. No tokens. No credits. No per&#8209;seat tier that quietly triples in
+        month four. Humans do not scale, and we have decided to be honest about that in the pricing
+        rather than in the fine print &mdash; which is, admittedly, where you are reading it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== CALLERS ===================== -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="slate"><span>Real callers &middot; not actors</span></div>
+        <h2>Customers, on the experience of <em>being told no.</em></h2>
+      </div>
+      <div class="callers">
+
+        <figure class="caller">
+          <blockquote>&ldquo;We sent them our AI&#8209;written onboarding flow. They came back and said it was condescending. We were offended. They were right.&rdquo;</blockquote>
+          <figcaption>
+            <span class="caller-name">VP Product</span>
+            <span class="caller-meta">Series B SaaS &middot; ordered item 001</span>
+          </figcaption>
+        </figure>
+
+        <figure class="caller">
+          <blockquote>&ldquo;Our model gave the pull request an A. Priya gave it a CVE. We now run both, in that order.&rdquo;</blockquote>
+          <figcaption>
+            <span class="caller-name">Engineering lead</span>
+            <span class="caller-meta">Fintech &middot; on the retainer</span>
+          </figcaption>
+        </figure>
+
+        <figure class="caller">
+          <blockquote>&ldquo;Dave told us not to build it. We built it. Dave was right. We have since increased Dave's rate ourselves.&rdquo;</blockquote>
+          <figcaption>
+            <span class="caller-name">Founder</span>
+            <span class="caller-meta">Seed stage &middot; ordered item 001</span>
+          </figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VIEWER MAIL ===================== -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="slate"><span>Viewer mail &middot; anticipated objections</span></div>
+        <h2>Questions we get, mostly from people <em>who already know the answer.</em></h2>
+      </div>
+      <div class="mail">
+        <details open>
+          <summary>Can't I just get another AI to check the first AI?</summary>
+          <p>You absolutely can, and it will agree with the first one. They went to the same school, read the same internet, and share the same confident tone about things neither of them has verified. Two models agreeing is not a second opinion. It is an echo with a progress bar.</p>
+        </details>
+        <details>
+          <summary>Isn't a human dramatically slower?</summary>
+          <p>Yes. Enormously. A human takes forty minutes to do what a model does in four seconds, and charges you for all forty. That latency is the product. It is the sound of someone actually reading it.</p>
+        </details>
+        <details>
+          <summary>Do your humans use AI to do the reviews?</summary>
+          <p>They're permitted to, and mostly they don't, on the grounds that they have read the output. Every verdict is signed by a named person who is professionally accountable for it. If a review is wrong, there is a human to be wrong &mdash; which, it turns out, is the whole service.</p>
+        </details>
+        <details>
+          <summary>What if I don't like the verdict?</summary>
+          <p>That is the most common outcome and it is not, on its own, grounds for a refund. You may request a second human at half rate. The second human usually agrees with the first one, which we appreciate is not the news you were hoping for.</p>
+        </details>
+        <details>
+          <summary>How do I know your humans are any good?</summary>
+          <p>Every inspector's background, number and specialism is on the file before you commit. Send us one item for $49 and judge the review the way we judge your output: by reading it closely and deciding whether it's actually any good.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== INTERSTITIAL ===================== -->
+  <section class="brb confetti">
+    <div class="wrap">
+      <div class="brb-set">
+        <div class="testcard">
+          <div class="testcard-bars"></div>
+          <div class="testcard-strip"></div>
+          <span class="testcard-label">HBN &middot; Ch. 07 &middot; Stand by</span>
+        </div>
+      </div>
+      <h2>We'll be right back.</h2>
+      <p>Do not adjust your set. The problem is the output.</p>
+    </div>
+  </section>
+
+  <!-- ===================== CALL ===================== -->
+  <section class="section" id="call">
+    <div class="wrap">
+      <div class="call">
+        <span class="standing-by">&#9679; Operators are standing by</span>
+        <h2>Get the verdict you were hoping to avoid.</h2>
+        <div class="phone-row">
+          <svg class="call-art" viewBox="0 0 96 74" fill="none" aria-hidden="true">
+            <g stroke="#21E8D6" stroke-width="3" stroke-linecap="round" fill="none">
+              <path d="M8 30a13 13 0 010-16M2 36a21 21 0 010-28M88 30a13 13 0 000-16M94 36a21 21 0 000-28"/>
+            </g>
+            <path d="M22 58h52a6 6 0 016 6v6H16v-6a6 6 0 016-6z" fill="#FFC531"/>
+            <circle cx="48" cy="42" r="19" fill="#0B0722" stroke="#FFC531" stroke-width="3"/>
+            <g fill="#FFC531"><circle cx="48" cy="27" r="2.6"/><circle cx="59" cy="31" r="2.6"/><circle cx="63" cy="42" r="2.6"/><circle cx="59" cy="53" r="2.6"/><circle cx="48" cy="57" r="2.6"/><circle cx="37" cy="53" r="2.6"/><circle cx="33" cy="42" r="2.6"/><circle cx="37" cy="31" r="2.6"/></g>
+            <path d="M24 26q24-18 48 0" stroke="#FF2E88" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <circle cx="24" cy="26" r="7" fill="#FF2E88"/><circle cx="72" cy="26" r="7" fill="#FF2E88"/>
+          </svg>
+          <a class="phone" href="tel:+18004862672">1&#8209;800&#8209;HUMAN&#8209;QA</a>
+        </div>
+        <p class="lede">
+          Send us one thing your model made. A real person will read it properly and tell you whether
+          it is good. There is a meaningful chance you will be annoyed. There is a larger chance you
+          will not ship the bad version.
+        </p>
+        <div class="call-actions">
+          <a class="btn" href="mailto:inspect@actuallyhuman.example?subject=Submission%20for%20inspection">Submit an item</a>
+          <a class="btn btn-cyan" href="mailto:hello@actuallyhuman.example?subject=Talk%20to%20a%20human">Email a human</a>
+        </div>
+        <p class="cc">[ dial tone. a human picks up on the second ring. ]</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="signoff">
+  <div class="wrap signoff-in">
+    <div>
+      <div class="tower-wrap">
+        <svg class="tower-art" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <g stroke="#21E8D6" stroke-width="2.5" stroke-linecap="round"><path d="M20 60L32 14l12 46M24 44h16M26 34h12M28 25h8"/></g>
+          <circle cx="32" cy="11" r="3.5" fill="#FF2E88"/>
+          <g stroke="#FFC531" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M22 8a14 14 0 000 6M16 4a22 22 0 000 14M42 8a14 14 0 010 6M48 4a22 22 0 010 14"/></g>
+        </svg>
+        <a class="mark" href="#top"><span class="mark-name">Actually Human</span><span class="mark-tm">&trade;</span></a>
+      </div>
+      <p>
+        A production of the Human Broadcasting Network.<br>
+        Carbon&#8209;based quality assurance. A person, but as a service.<br>
+        Written by a human. Reviewed by a second human. Approved reluctantly.
+      </p>
+    </div>
+    <span class="cc-badge">CC &middot; Closed captioned for the skeptical</span>
+  </div>
+</footer>
