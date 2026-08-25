@@ -48,6 +48,24 @@ Type:
 - A **WE'LL BE RIGHT BACK** interstitial before the call block
 - CC badge in the sign-off
 
+## Imagery
+
+All artwork is inline SVG or pure CSS — no external assets, no image files, nothing
+fetched at runtime. Everything is drawn flat in the same broadcast-graphics style
+using the triad above.
+
+| Piece | Where | Built with |
+|---|---|---|
+| Memphis confetti tile | hero, offer, interstitial | tiled SVG data-URI, `opacity: 0.17` + radial mask that clears the centre so it never fights body copy |
+| CRT snow | inside the hero television | `feTurbulence` data-URI, `mix-blend-mode: screen`, 3-step shuffle animation |
+| Segment icons (5) | one per service card | inline SVG — marked-up page + red pen, film strip, terminal, palette, lightbulb struck through |
+| Cast portraits (4) | the cast cards | inline SVG, flat geometric heads. Same cream face on all four, differentiated only by hair, colour and accessory (glasses, headphones, beret, cap) — deliberately abstract, no likeness. Every one has the same flat, unimpressed mouth. |
+| SMPTE test card | WE'LL BE RIGHT BACK interstitial | CSS hard-stop gradients — 75% bars over the castellation strip, in a mini TV |
+| Starburst | behind each price | animated `repeating-conic-gradient` |
+| Rotary phone | beside the 1-800 number | inline SVG with ring arcs |
+| Broadcast tower | sign-off | inline SVG with signal waves |
+| AS SEEN ON BASIC CABLE | offer header | CSS oval badge |
+
 All motion is disabled under `prefers-reduced-motion`.
 
 ## Running it
