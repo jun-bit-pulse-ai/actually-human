@@ -784,6 +784,58 @@ a { color: inherit; }
 .call-actions { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
 
 /* ============================================================
+   Waiting list — styled as a call-in order slip
+   ============================================================ */
+.waitlist {
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  gap: 0.7rem;
+  text-align: left;
+  border: 2px dashed var(--line);
+  padding: 1.1rem;
+  background: var(--void-2);
+}
+.waitlist-label {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.waitlist-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.waitlist input[type="email"] {
+  flex: 1 1 210px;
+  min-width: 0;
+  font-family: var(--body);
+  font-size: 1rem;
+  color: var(--white);
+  background: var(--void);
+  border: 2px solid var(--cyan);
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.45);
+  padding: 0.78rem 0.85rem;
+}
+.waitlist input[type="email"]::placeholder { color: var(--dim-2); }
+.waitlist button.btn {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+}
+.waitlist button.btn[disabled] { opacity: 0.6; cursor: wait; }
+.wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.wl-msg {
+  font-family: var(--crt);
+  font-size: 1.0625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  min-height: 1.4em;
+}
+.wl-msg[data-state="ok"]  { color: var(--ok); }
+.wl-msg[data-state="err"] { color: var(--pink); }
+
+/* ============================================================
    Sign-off
    ============================================================ */
 .signoff {
@@ -1402,10 +1454,15 @@ a { color: inherit; }
           Send us one thing your robot made. A real person will look at it and tell you
           the truth. You might get grumpy. But you won't ship the bad thing.
         </p>
-        <div class="call-actions">
-          <a class="btn" href="mailto:inspect@actuallyhuman.example?subject=Submission%20for%20inspection">Submit an item</a>
-          <a class="btn btn-cyan" href="mailto:hello@actuallyhuman.example?subject=Talk%20to%20a%20human">Email a human</a>
-        </div>
+        <form class="waitlist" id="waitlist" novalidate>
+          <span class="waitlist-label">&#9654; Join the waiting list</span>
+          <div class="waitlist-row">
+            <label class="wl-hp" aria-hidden="true">Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+            <input type="email" name="email" id="wl-email" placeholder="you@yourcompany.com" required autocomplete="email" aria-label="Your email address">
+            <button class="btn" type="submit" id="wl-btn">Put me on it</button>
+          </div>
+          <p class="wl-msg" id="wl-msg" role="status" aria-live="polite">No robots. One human will email you.</p>
+        </form>
         <p class="cc">[ it rings twice. a human picks up. ]</p>
       </div>
     </div>
@@ -1433,3 +1490,54 @@ a { color: inherit; }
     <span class="cc-badge">CC &middot; Closed captioned for the skeptical</span>
   </div>
 </footer>
+
+<script>
+(() => {
+  const form = document.getElementById('waitlist');
+  if (!form) return;
+  const btn = document.getElementById('wl-btn');
+  const msg = document.getElementById('wl-msg');
+  const input = document.getElementById('wl-email');
+  const idle = msg.textContent;
+
+  const say = (text, state) => { msg.textContent = text; if (state) msg.dataset.state = state; else delete msg.dataset.state; };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      say("That email doesn't look right.", 'err');
+      input.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    const label = btn.textContent;
+    btn.textContent = 'Dialling\u2026';
+    say('Connecting\u2026');
+
+    try {
+      const r = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, company: form.company.value }),
+      });
+      const data = await r.json().catch(() => ({}));
+
+      if (r.ok && data.ok) {
+        form.querySelector('.waitlist-row').style.display = 'none';
+        say("You're on the list. A human will email you. An actual one.", 'ok');
+        return;
+      }
+      say(data.error || 'Something went wrong. Try again in a minute.', 'err');
+    } catch {
+      say('No connection. Check your internet and try again.', 'err');
+    }
+
+    btn.disabled = false;
+    btn.textContent = label;
+  });
+
+  input.addEventListener('input', () => { if (msg.dataset.state === 'err') say(idle); });
+})();
+</script>
